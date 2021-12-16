@@ -3,7 +3,7 @@ import os
 
 
 class Node:
-    def __init__(self, pos , id):
+    def __init__(self, pos , id , **nodes):
         """
         pos: the position of nodes in space.
         id: node's key
@@ -26,6 +26,22 @@ class Node:
         :return:pos
         """
         return self.pos
+
+    def get_out(self):
+        """
+        all the nodes that this node connect them
+
+        :return: in
+        """
+        return self.connect_out
+
+    def get_in(self):
+        """
+        all the edges that arrived to this node
+        :return: out
+        """
+        return  self.connect_in
+
 
     def add_connet_out(self , id , weight):
         """
