@@ -23,6 +23,7 @@ def check():
     check2()
 
 
+
 def check0():
     """
     This function tests the naming (main methods of the DiGraph class, as defined in GraphInterface.
