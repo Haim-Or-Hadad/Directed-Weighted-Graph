@@ -3,13 +3,15 @@ import os
 
 
 class Node:
-    def __init__(self, pos , id , **nodes):
+
+    def __init__(self, id : int,  pos : tuple = None):
         """
         pos: the position of nodes in space.
         id: node's key
         """
         self.pos = pos
         self.id = id
+        self.weight = float('inf')
         self.connect_out = {}
         self.connect_in = {}
 
@@ -43,13 +45,13 @@ class Node:
         return  self.connect_in
 
 
-    def add_connet_out(self , id , weight):
+    def add_connect_out(self , id , weight):
         """
         add edge between this node to neighbor node
         :param id: neighbor id
         :param weight: weight id
         """
-        self.connect_to[id] = weight
+        self.connect_out[id] = weight
 
     def add_connect_in(self , id , weight):
         """
@@ -59,17 +61,19 @@ class Node:
         """
         self.connect_in[id] = weight
 
-
-
+    def __str__(self):
+        return f"pos:{str(self.pos)[1:-1]},id:{self.id}"
 
 
 
 # root_path = os.path.dirname(os.path.abspath(__file__))
 #
 #
-# with open(root_path+'\A0.JSON', 'r') as file:
+# with open(root_path+'\A1.JSON', 'r') as file:
 #     list_nodes = json.load(file)['Nodes']
 #     nodes = [Node(**n) for n in list_nodes]
-
+#
+# nodes[0].pos="34,34,123213"
+# nodes[3].pos="34,34,123213"
 # for n in nodes:
 #     print(n.pos , n.id)

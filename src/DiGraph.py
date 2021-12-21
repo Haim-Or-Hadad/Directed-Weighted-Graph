@@ -71,8 +71,8 @@ class DiGraph(GraphInterface):
             return False
         self.num_of_edge += 1
         self.mc += 1
-        self.nodes.get(id1).add_connect_out(id2, weight)
-        self.nodes.get(id2).add_connect_in(id1, weight)
+        self.nodes[id1].add_connect_out(id2, weight)
+        self.nodes[id2].add_connect_in(id1, weight)
         return True
 
     def add_node(self, node_id: int, pos: tuple = None) -> bool:
@@ -121,12 +121,18 @@ class DiGraph(GraphInterface):
         """
         if node_id1 not in self.nodes or node_id2 not in self.nodes:
             return False
-        if self.nodes[node_id1].connect_out[node_id2] is not None and\
-                self.nodes[node_id2].connect_out[node_id1] is not None:
+        if node_id2 in self.nodes[node_id1].connect_out and node_id1 in self.nodes[node_id2].connect_in:
             del self.nodes[node_id1].connect_out[node_id2]
-            del self.nodes[node_id2].connect_out[node_id1]
+            del self.nodes[node_id2].connect_in[node_id1]
             return True
         return False
+
+    def __repr__(self):
+        gra = ''
+        for key, value in self.nodes.items():
+            gra +=  str(value) + '\n'
+
+        return gra
 
 # g = DiGraph()# for f in g.edges:
 #     print(f.src)

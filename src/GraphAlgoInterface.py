@@ -41,7 +41,9 @@ class GraphAlgoInterface:
 #        >>> g_algo.addNode(2)
 #        >>> g_algo.addEdge(0,1,1)
 #        >>> g_algo.addEdge(1,2,4)
-#        >>> g_algo.shortestPath(0,1)
+#     .
+   ..........................................................................
+   >>> g_algo.shortestPath(0,1)
 #        (1, [0, 1])
 #        >>> g_algo.shortestPath(0,2)
 #        (5, [0, 1, 2])
