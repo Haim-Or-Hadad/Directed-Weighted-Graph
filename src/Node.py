@@ -4,7 +4,7 @@ import os
 
 class Node:
 
-    def __init__(self, id : int,  pos : tuple = None):
+    def __init__(self, id: int, pos: tuple = None):
         """
         pos: the position of nodes in space.
         id: node's key
@@ -14,6 +14,8 @@ class Node:
         self.weight = float('inf')
         self.connect_out = {}
         self.connect_in = {}
+        self.tag = -1
+        self.info = "White"
 
     def get_id(self):
         """
@@ -29,6 +31,9 @@ class Node:
         """
         return self.pos
 
+    def get_tag(self):
+        return self.tag
+
     def get_out(self):
         """
         all the nodes that this node connect them
@@ -42,10 +47,9 @@ class Node:
         all the edges that arrived to this node
         :return: out
         """
-        return  self.connect_in
+        return self.connect_in
 
-
-    def add_connect_out(self , id , weight):
+    def add_connect_out(self, id, weight):
         """
         add edge between this node to neighbor node
         :param id: neighbor id
@@ -53,7 +57,7 @@ class Node:
         """
         self.connect_out[id] = weight
 
-    def add_connect_in(self , id , weight):
+    def add_connect_in(self, id, weight):
         """
         add edge that connect to this node
         :param id: neighbor id
@@ -64,6 +68,8 @@ class Node:
     def __str__(self):
         return f"pos:{str(self.pos)[1:-1]},id:{self.id}"
 
+    def __repr__(self):
+        return f"pos:{str(self.pos)[1:-1]}\n"
 
 
 # root_path = os.path.dirname(os.path.abspath(__file__))

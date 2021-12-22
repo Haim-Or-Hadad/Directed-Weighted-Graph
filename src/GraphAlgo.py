@@ -1,4 +1,5 @@
 import json
+import random
 from typing import List
 
 from GraphAlgoInterface import GraphAlgoInterface
@@ -7,7 +8,8 @@ from DiGraph import DiGraph
 
 
 class GraphAlgo(GraphAlgoInterface):
-    def _init_(self, graph):
+
+    def __init__(self, graph: DiGraph = DiGraph()):
         self.graph = graph
 
     def get_graph(self) -> GraphInterface:
@@ -24,12 +26,18 @@ class GraphAlgo(GraphAlgoInterface):
         """
         my_graph = DiGraph()
         try:
-            with open("path_to_file", 'r') as file:
+            with open(file_name, 'r') as file:
                 g_dict = json.load(file)
                 for node in g_dict['Nodes']:
-                    my_graph.add_node(node.id, node.pos)
+                    if "pos" in node:
+                        my_graph.add_node(node['id'], node['pos'])
+                    else:
+                        x = random.uniform(32, 33)
+                        y = random.uniform(34, 36)
+                        my_graph.add_node(node['id'], (x, y))
+
                 for edge in g_dict['Edges']:
-                    my_graph.add_edge(edge("src"), edge("dest"), edge("w"))
+                    my_graph.add_edge(edge["src"], edge["dest"], edge["w"])
                 self.graph = my_graph
                 return True
         except:
@@ -67,7 +75,17 @@ class GraphAlgo(GraphAlgoInterface):
         More info:
         https://en.wikipedia.org/wiki/Dijkstra's_algorithm
         """
-        raise NotImplementedError
+        self.dijkstra_to_dist(id1)
+        curr_node = self.graph.nodes[id2]
+        weight = self.graph.nodes[id2].weight
+        path = []
+        while curr_node.id is not id1:
+            path.append(curr_node.id)
+            tag = curr_node.tag
+            curr_node = self.graph.nodes.get(tag)
+        path.append(curr_node.id)
+        path.reverse()
+        return weight, path
 
     def TSP(self, node_lst: List[int]) -> (List[int], float):
         """
@@ -90,3 +108,23 @@ class GraphAlgo(GraphAlgoInterface):
         @return: None
         """
         raise NotImplementedError
+
+    def rest_tag_weight(self):
+        for node in self.graph.nodes.values():
+            node.weight = float('inf')
+            node.tag = -1
+            node.info = "White"
+
+    def dijkstra_to_dist(self, src: int) -> (float, list):
+        self.rest_tag_weight()
+        self.graph.nodes.get(src).weight = 0
+        node_queue = [self.graph.nodes.get(src)]
+        for node in node_queue:
+            for neigh in node.connect_out:
+                if self.graph.nodes[neigh].info == "White":
+                    node_queue.append(self.graph.nodes[neigh])
+                if node.weight + node.connect_out[neigh] < self.graph.nodes[neigh].weight:
+                    self.graph.nodes.get(neigh).weight = node.weight + node.connect_out[neigh]
+                    self.graph.nodes[neigh].tag = node.id
+
+            node.info = "Black"
