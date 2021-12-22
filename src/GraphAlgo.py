@@ -1,5 +1,6 @@
 import json
 import random
+import sys
 from typing import List
 
 from GraphAlgoInterface import GraphAlgoInterface
@@ -99,6 +100,20 @@ class GraphAlgo(GraphAlgoInterface):
         Finds the node that has the shortest distance to it's farthest node.
         :return: The nodes id, min-maximum distance
         """
+        for key in self.graph.nodes.values():
+            self.dijkstra_to_dist(key.id)
+        min_value = sys.maxsize
+        for w in self.graph.nodes:
+            if key.max_weight < min_value:
+                t = (key.id, key.max_weight)
+                min_value = key.max_weight
+
+        return min_value
+
+
+
+
+
 
     def plot_graph(self) -> None:
         """
@@ -126,5 +141,10 @@ class GraphAlgo(GraphAlgoInterface):
                 if node.weight + node.connect_out[neigh] < self.graph.nodes[neigh].weight:
                     self.graph.nodes.get(neigh).weight = node.weight + node.connect_out[neigh]
                     self.graph.nodes[neigh].tag = node.id
-
             node.info = "Black"
+        for node in self.graph.nodes.values():
+            if node.weight > self.graph.nodes.get(src).max_weight:
+                self.graph.nodes.get(src).max_weight = node.weight
+
+
+

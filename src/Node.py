@@ -16,6 +16,7 @@ class Node:
         self.connect_in = {}
         self.tag = -1
         self.info = "White"
+        self.max_weight = 0
 
     def get_id(self):
         """
