@@ -54,10 +54,11 @@ def check1():
     :return:
     """
     g_algo = GraphAlgo()  # init an empty graph - for the GraphAlgo
-    file = "../data/A1.json"
+    file = "../data/A5.json"
     g_algo.load_from_json(file)  # init a GraphAlgo from a json file
     #print(g_algo.shortest_path(2, 15))
     #print(g_algo.shortest_path(3, 1))
+    print(g_algo.shortest_path(7,1)) # my test
     print(g_algo.centerPoint())
     # g_algo.save_to_json(file + '_saved')
     # g_algo.plot_graph()

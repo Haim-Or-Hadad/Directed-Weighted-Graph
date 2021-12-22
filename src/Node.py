@@ -18,6 +18,8 @@ class Node:
         self.info = "White"
         self.max_weight = 0
 
+
+
     def get_id(self):
         """
         :returns node's id.

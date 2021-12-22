@@ -103,12 +103,12 @@ class GraphAlgo(GraphAlgoInterface):
         for key in self.graph.nodes.values():
             self.dijkstra_to_dist(key.id)
         min_value = sys.maxsize
-        for w in self.graph.nodes:
-            if key.max_weight < min_value:
-                t = (key.id, key.max_weight)
-                min_value = key.max_weight
+        for w in self.graph.nodes.values():
+            if w.max_weight < min_value:
+                t = (w.id, w.max_weight)
+                min_value = w.max_weight
 
-        return min_value
+        return t
 
 
 
