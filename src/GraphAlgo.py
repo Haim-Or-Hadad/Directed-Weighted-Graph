@@ -1,6 +1,7 @@
 import json
 import random
 import sys
+from queue import PriorityQueue
 from typing import List
 
 from GraphAlgoInterface import GraphAlgoInterface
@@ -17,7 +18,7 @@ class GraphAlgo(GraphAlgoInterface):
         """
         :return: the directed graph on which the algorithm works on.
         """
-        self.graph
+        return self.graph
 
     def load_from_json(self, file_name: str) -> bool:
         """
@@ -76,7 +77,7 @@ class GraphAlgo(GraphAlgoInterface):
         More info:
         https://en.wikipedia.org/wiki/Dijkstra's_algorithm
         """
-        self.dijkstra_to_dist(id1)
+        self.dijkstra(id1)
         curr_node = self.graph.nodes[id2]
         weight = self.graph.nodes[id2].weight
         path = []
@@ -101,7 +102,7 @@ class GraphAlgo(GraphAlgoInterface):
         :return: The nodes id, min-maximum distance
         """
         for key in self.graph.nodes.values():
-            self.dijkstra_to_dist(key.id)
+            self.dijkstra(key.id)
         min_value = sys.maxsize
         for w in self.graph.nodes.values():
             if w.max_weight < min_value:
@@ -109,11 +110,6 @@ class GraphAlgo(GraphAlgoInterface):
                 min_value = w.max_weight
 
         return t
-
-
-
-
-
 
     def plot_graph(self) -> None:
         """
@@ -130,21 +126,21 @@ class GraphAlgo(GraphAlgoInterface):
             node.tag = -1
             node.info = "White"
 
-    def dijkstra_to_dist(self, src: int) -> (float, list):
+    def dijkstra(self, src: int) -> (float, list):
         self.rest_tag_weight()
         self.graph.nodes.get(src).weight = 0
-        node_queue = [self.graph.nodes.get(src)]
-        for node in node_queue:
+        node_queue = PriorityQueue()
+        node_queue.put((self.graph.nodes.get(src).weight, self.graph.nodes.get(src)))
+        while not node_queue.empty():
+            node = node_queue.get()[1]
+            node.info = "Black"
             for neigh in node.connect_out:
-                if self.graph.nodes[neigh].info == "White":
-                    node_queue.append(self.graph.nodes[neigh])
                 if node.weight + node.connect_out[neigh] < self.graph.nodes[neigh].weight:
                     self.graph.nodes.get(neigh).weight = node.weight + node.connect_out[neigh]
-                    self.graph.nodes[neigh].tag = node.id
-            node.info = "Black"
+                    self.graph.nodes.get(neigh).tag = node.id
+                if self.graph.nodes.get(neigh).info == "White":
+                    node_queue.put((self.graph.nodes.get(neigh).weight, self.graph.nodes.get(neigh)))
+
         for node in self.graph.nodes.values():
             if node.weight > self.graph.nodes.get(src).max_weight:
                 self.graph.nodes.get(src).max_weight = node.weight
-
-
-
