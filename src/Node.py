@@ -4,7 +4,7 @@ import os
 
 class Node:
 
-    def __init__(self, id: int, pos: tuple = None):
+    def __init__(self, id: int, pos: tuple = None, **kwargs):
         """
         pos: the position of nodes in space.
         id: node's key
@@ -18,7 +18,13 @@ class Node:
         self.info = "White"
         self.max_weight = 0
 
+    def x(self):
+        list = self.pos.split(",")
+        return list[0]
 
+    def y(self):
+        list = self.pos.split(",")
+        return list[1]
 
     def get_id(self):
         """
