@@ -1,3 +1,4 @@
+import itertools
 import json
 import random
 import sys
@@ -95,6 +96,20 @@ class GraphAlgo(GraphAlgoInterface):
         :param node_lst: A list of nodes id's
         :return: A list of the nodes id's in the path, and the overall distance
         """
+        perm = list(itertools.permutations(node_lst))  # create a list with all the permutations
+        min_dist = sys.maxsize  # set the min distance to max
+        for perm in perm:  # go over all the permutations
+            distance_sum = 0
+            for nodes in range(len(perm) - 1):  # go over the nodes in the current permutation
+                src = perm[nodes]
+                dest = perm[nodes + 1]
+                # sum the distance of the shortest path going over all the nodes in the curr permutations
+                distance_sum += self.shortest_path(src, dest)[0]
+            if distance_sum < min_dist:
+                min_dist = distance_sum
+                ans = (perm, min_dist)
+
+        return ans
 
     def centerPoint(self) -> (int, float):
         """
