@@ -43,8 +43,8 @@ class GraphAlgo(GraphAlgoInterface):
                     my_graph.add_edge(edge["src"], edge["dest"], edge["w"])
                 self.graph = my_graph
                 return True
-        except:
-            print("wrong")
+        except IOError as e:
+            print(e)
             return False
 
     def save_to_json(self, file_name: str) -> bool:
@@ -53,7 +53,27 @@ class GraphAlgo(GraphAlgoInterface):
         @param file_name: The path to the out file
         @return: True if the save was successful, False o.w.
         """
-        raise NotImplementedError
+        try:
+            Nodes = []  # List of Nodes and Edges.
+            Edges = []
+            # Going over all the nodes in the graph
+            for node in self.graph.get_all_v().values():
+                Nodes.append({"pos": node.pos, "id": node.id})  # add the node to the list
+                # going over all the edges going out of the current node
+                # edge_Dest is the key of the dest of the edge
+                for edges_Dest in self.graph.all_out_edges_of_node(node.id):
+                    # get the weight of the edge
+                    weight = self.graph.all_out_edges_of_node(node.id)[edges_Dest]
+                    Edges.append({"src": node.id, "w": weight, "dest": edges_Dest})
+            # create a dictionary contain Node list and Edge list
+            json_dict = {"Nodes": Nodes, "Edges": Edges}
+            with open(file_name + ".json", 'w') as file:
+                # create the json file
+                json.dump(json_dict, indent=4, fp=file)
+        except IOError as e:
+            print(e)
+            return False
+        return True
 
     def shortest_path(self, id1: int, id2: int) -> (float, list):
         """
@@ -61,26 +81,16 @@ class GraphAlgo(GraphAlgoInterface):
         @param id1: The start node id
         @param id2: The end node id
         @return: The distance of the path, a list of the nodes ids that the path goes through
-        Example:
-#      >>> from GraphAlgo import GraphAlgo
-#       >>> g_algo = GraphAlgo()
-#        >>> g_algo.addNode(0)
-#        >>> g_algo.addNode(1)
-#        >>> g_algo.addNode(2)
-#        >>> g_algo.addEdge(0,1,1)
-#        >>> g_algo.addEdge(1,2,4)
-#        >>> g_algo.shortestPath(0,1)
-#        (1, [0, 1])
-#        >>> g_algo.shortestPath(0,2)
-#        (5, [0, 1, 2])
-        Notes:
-        If there is no path between id1 and id2, or one of them dose not exist the function returns (float('inf'),[])
-        More info:
-        https://en.wikipedia.org/wiki/Dijkstra's_algorithm
+        This function using Dijkstra algorithm for finding the dist of id1 from all the nodes in the graph
+        then going over the tags in id2 node back to id1 node adding the node id to the path
         """
+        if id1 not in self.graph.nodes or id2 not in self.graph.nodes:
+            return float('inf'), []
         self.dijkstra(id1)
         curr_node = self.graph.nodes[id2]
         weight = self.graph.nodes[id2].weight
+        if weight == float('inf'):
+            return float('inf'), []
         path = []
         while curr_node.id is not id1:
             path.append(curr_node.id)

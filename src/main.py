@@ -2,6 +2,9 @@ from DiGraph import DiGraph
 from GraphAlgo import GraphAlgo
 
 
+# from Graph_pygame import *
+
+
 def check():
     """
     Graph: |V|=4 , |E|=5
@@ -18,9 +21,9 @@ def check():
     (7, 6.806805834715163)
     ([1,3,4,2],3.5)
     """
-    #check0()
+    # check0()
     check1()
-    #check2()
+    # check2()
 
 
 def check0():
@@ -30,7 +33,7 @@ def check0():
     """
     g = DiGraph()  # creates an empty directed graph
     for n in range(4):
-        g.add_node(n,(n+1,n+23))
+        g.add_node(n, (n + 1, n + 23))
     g.add_edge(0, 1, 1)
     g.add_edge(1, 0, 1.1)
     g.add_edge(1, 2, 1.3)
@@ -45,7 +48,7 @@ def check0():
     # print(g.all_out_edges_of_node(1))
     # g_algo = GraphAlgo(g)
     # print(g_algo.shortest_path(0, 3))
-    #g_algo.plot_graph()
+    # g_algo.plot_graph()
 
 
 def check1():
@@ -54,13 +57,15 @@ def check1():
     :return:
     """
     g_algo = GraphAlgo()  # init an empty graph - for the GraphAlgo
-    file = "../data/A5.json"
+    file = '../data/A5.json'
     g_algo.load_from_json(file)  # init a GraphAlgo from a json file
-    #print(g_algo.shortest_path(2, 15))
-    #print(g_algo.shortest_path(3, 1))
-    print(g_algo.shortest_path(7,1)) # my test
+    print(g_algo.shortest_path(2, 15))
+    print(g_algo.shortest_path(3, 1))
+    g_algo.save_to_json("te")
+    print(g_algo.shortest_path(100, 103))  # my test
     print(g_algo.centerPoint())
-    # g_algo.save_to_json(file + '_saved')
+    print(g_algo.TSP([1, 2, 3]))
+    g_algo.save_to_json(file + '_saved')
     # g_algo.plot_graph()
 
 
