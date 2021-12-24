@@ -20,11 +20,11 @@ class Node:
 
     def x(self):
         list = self.pos.split(",")
-        return list[0]
+        return float(list[0])
 
     def y(self):
         list = self.pos.split(",")
-        return list[1]
+        return float(list[1])
 
     def get_id(self):
         """

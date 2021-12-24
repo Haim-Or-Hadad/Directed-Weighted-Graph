@@ -63,10 +63,10 @@ def check1():
     print(g_algo.shortest_path(3, 1))
     g_algo.save_to_json("te")
     print(g_algo.shortest_path(100, 103))  # my test
-    print(g_algo.centerPoint())
-    print(g_algo.TSP([1, 2, 3]))
+    # print(g_algo.centerPoint())
+    # print(g_algo.TSP([1, 2, 3]))
     g_algo.save_to_json(file + '_saved')
-    # g_algo.plot_graph()
+    g_algo.plot_graph()
 
 
 def check2():

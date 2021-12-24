@@ -2,12 +2,19 @@ import itertools
 import json
 import random
 import sys
+from ctypes.wintypes import RGB
 from queue import PriorityQueue
 from typing import List
+
+import pygame
 
 from GraphAlgoInterface import GraphAlgoInterface
 from GraphInterface import GraphInterface
 from DiGraph import DiGraph
+
+bg = pygame.image.load("nodebook.jpg")
+
+WIDTH, HEIGHT = 900, 720
 
 
 class GraphAlgo(GraphAlgoInterface):
@@ -143,7 +150,9 @@ class GraphAlgo(GraphAlgoInterface):
         Otherwise, they will be placed in a random but elegant manner.
         @return: None
         """
-        raise NotImplementedError
+        # gui = GUI(self)
+        # gui.gui()
+        self.gui()
 
     def rest_tag_weight(self):
         for node in self.graph.nodes.values():
@@ -169,3 +178,80 @@ class GraphAlgo(GraphAlgoInterface):
         for node in self.graph.nodes.values():
             if node.weight > self.graph.nodes.get(src).max_weight:
                 self.graph.nodes.get(src).max_weight = node.weight
+
+    def gui(self):
+        pygame.init()
+        scr = pygame.display.set_mode((900, 600))
+        pygame.font.init()
+        FONT = pygame.font.SysFont('Our Graph', 20, bold=True)
+        run = True
+        while run:
+            for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    run = False
+                scr.blit(bg, (0, 0))
+            for node in self.graph.nodes.values():
+                x = self.my_scale(node.x(), x = True )
+                y = self.my_scale(node.y(), y = True)
+                t = (x, y)
+                pygame.draw.circle(scr, RGB(40, 40, 40), t, 6)
+            # for e in self.edges:
+            #     # find the edge nodes
+            #     src = next(n for n in graph.nodes if n.id == e.src)
+            #     dest = next(n for n in graph.nodes if n.id == e.dest)
+            #
+            #     # scaled positions
+            #     src_x = my_scale(src.pos.x, x=True)
+            #     src_y = my_scale(src.pos.y, y=True)
+            #     dest_x = my_scale(dest.pos.x, x=True)
+            #     dest_y = my_scale(dest.pos.y, y=True)
+            #
+            #     # draw the line
+            #     pygame.draw.line(screen, Color(61, 72, 126),
+            #                      (src_x, src_y), (dest_x, dest_y))
+            pygame.display.update()
+
+        pygame.quit()
+        sys.exit()
+
+
+    def my_scale(self, data, x=False, y=False ):
+        if x:
+            return self.scale(data, 50, 680 , self.min_x(), self.max_x())
+        if y:
+            return self.scale(data, 50, 600-50 , self.min_y(), self.max_y())
+
+    def scale(self , data ,  min_screen, max_screen, min_data, max_data):
+        """
+         get the scaled data with proportions min_data, max_data
+         relative to min and max screen dimensions
+         """
+        return ((data - min_data) / (max_data - min_data)) * (max_screen - min_screen) + min_screen
+
+    def min_x(self):
+        min_x = sys.maxsize
+        for node in self.graph.nodes.values():
+            if float(node.x()) < min_x:
+                min_x = float(node.x())
+        return min_x
+
+    def max_x(self):
+        max_x = 0
+        for node in self.graph.nodes.values():
+            if node.x() > max_x:
+                max_x = node.x()
+        return max_x
+
+    def min_y(self):
+        min_y = sys.maxsize
+        for node in self.graph.nodes.values():
+            if node.y() < min_y:
+                min_y = node.y()
+        return min_y
+
+    def max_y(self):
+        max_y = 0
+        for node in self.graph.nodes.values():
+            if node.y() > max_y:
+                max_y = node.y()
+        return max_y

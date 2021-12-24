@@ -13,6 +13,10 @@ bg = pygame.image.load("nodebook.jpg")
 class GUI:
     gra_algo: GraphAlgo = GraphAlgo()
 
+    def __init__(self, g: GraphAlgo = GraphAlgo()):
+        self.gra_algo= g
+
+
     def scale(data, min_screen, max_screen, min_data, max_data):
         """
         get the scaled data with proportions min_data, max_data
@@ -20,8 +24,7 @@ class GUI:
         """
         return ((data - min_data) / (max_data - min_data)) * (max_screen - min_screen) + min_screen
 
-    def gui(self, g):
-        self.gra_algo = g
+    def gui(self):
         min_x = self.min_x()
         min_y = self.min_y()
         max_x = self.max_x()
@@ -29,7 +32,7 @@ class GUI:
         pygame.init()
         scr = pygame.display.set_mode((600, 500))
         pygame.font.init()
-        FONT = pygame.font.SysFont('Our Grapg', 20, bold=True)
+        FONT = pygame.font.SysFont('Our Graph', 20, bold=True)
         run = True
         while run:
             for e in pygame.event.get():
@@ -41,7 +44,7 @@ class GUI:
                 position = (node.x())
                 x = self.scale(position[0], 0, 600, min_x, max_x)
                 y = self.scale(position[1], 0, 500, min_y, max_y)
-                pygame.draw.circle(scr, RGB(40, 40, 40), position[:1], 80)
+                pygame.draw.circle(scr, RGB(40, 40, 40), position[:1], 6)
 
             pygame.display.update()
 
@@ -70,15 +73,12 @@ class GUI:
         return min_y
 
     def max_y(self):
-            max_y = 0
-            for node in self.gra_algo.graph.nodes.values():
-                if node.y() > max_y:
-                    max_y = node.y()
-            return max_y
+        max_y = 0
+        for node in self.gra_algo.graph.nodes.values():
+            if node.y() > max_y:
+                max_y = node.y()
+        return max_y
 
-
-
-    g_algo = GraphAlgo()  # init an empty graph - for the GraphAlgo
-    file = "../data/A5.json"
-    g_algo.load_from_json(file)
-
+    # g_algo = GraphAlgo()  # init an empty graph - for the GraphAlgo
+    # file = "../data/A5.json"
+    # g_algo.load_from_json(file)
