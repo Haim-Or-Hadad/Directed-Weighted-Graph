@@ -23,7 +23,7 @@ class Node:
         :returns x position of node
         :return int
         """
-        list = self.pos.split(",")
+        list= self.pos.split(",")
         return float(list[0])
 
     def y(self):

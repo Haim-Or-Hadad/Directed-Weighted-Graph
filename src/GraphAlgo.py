@@ -183,7 +183,6 @@ class GraphAlgo(GraphAlgoInterface):
         pygame.init()
         scr = pygame.display.set_mode((900, 600))
         pygame.font.init()
-        font = pygame.font.SysFont('Arial', 25)
         FONT = pygame.font.SysFont('Our Graph', 20, bold=True)
         run = True
         while run:
@@ -191,50 +190,82 @@ class GraphAlgo(GraphAlgoInterface):
                 if e.type == pygame.QUIT:
                     run = False
                 scr.blit(bg, (0, 0))
-            for node in self.graph.nodes.values():
-                x = self.my_scale(node.x(), x = True )
-                y = self.my_scale(node.y(), y = True)
-                t = (x, y)
-                pygame.draw.circle(scr, RGB(40, 40, 40), t, 6)
-            for e in self.graph.nodes.values():
-                src_x = e.x()
-                src_y = e.y()
-                list_out = self.graph.all_out_edges_of_node(e.id)
-                for edge in list_out:
-                    dest_x = self.graph.nodes.get(edge).x()
-                    dest_y = self.graph.nodes.get(edge).y()
-
-                src_x = self.my_scale(src_x, x=True)
-                src_y = self.my_scale(src_y, y=True)
-                dest_x = self.my_scale(dest_x, x=True)
-                dest_y = self.my_scale(dest_y, y=True)
-
-
-                pygame.draw.line(scr, RGB(40, 40, 40),
-                                 (src_x, src_y), (dest_x, dest_y))
-                # pygame.draw.polygon(scr, (0, 0, 0),
-                #                     ((src_x, src_y),
-                #                      (dest_x, dest_y),
-                #                      (src_x+1, src_y+1), (dest_x-1, dest_y-1), (dest_x, dest_y)), 0)
                 self.addRect(scr)
-                scr.blit(font.render('load', True, (255,0,0)), (842,0))
-                #     if e.type == pygame.MOUSEBUTTONDOWN:
-                #         pos = pygame.mouse.get_pos()
-                #         if 700 < pos[0] < 829 and 0 < pos[1] < 25:
-                #             str = easygui.enterbox("name:")
-                #             self.load_from_json("data/"+ str +".json")
+                self.write_in_rect(scr)
 
-
-
-
-
+                self.algorithms_buttons(e ,scr)
+            self.draw_nodes(scr)
+            self.draw_edges(scr)
             pygame.display.update()
 
         pygame.quit()
         sys.exit()
 
+    def algorithms_buttons(self,e , scr):
+        if e.type == pygame.MOUSEBUTTONDOWN:
+            click_place = pygame.mouse.get_pos()
+            #file_path = filedialog.askopenfilename()
+            if 820 < click_place[0] < 900 and 0 < click_place[1] < 40:
+                file_path = filedialog.askopenfilename()
+                self.load_from_json(file_path)
+            #SAVE BUTTON
+            if 820 < click_place[0] < 900 and 40 < click_place[1] < 80:
+                pass
+            if (820 >= click_place[0] or click_place[0] >= 900) or (80 >= click_place[1] or click_place[1] >= 120):
+                pass
+            else:
+                self.graph.remove_node(1)
+            if 820 < click_place[0] < 900 and 120 < click_place[1] < 160:
+                pass
+            if 820 < click_place[0] < 900 and 160 < click_place[1] < 200:
+                pass
+
+
+
+
     def addRect(self,scr):
-        pygame.draw.rect(scr , (135,135,135),[829, 0, 70,30], 2)
+        pygame.draw.rect(scr , (135,135,135),[820, 0, 80, 40], 2) #LOAD
+        pygame.draw.rect(scr, (135, 135, 135), [690, 0, 130, 40], 2) #add node
+        pygame.draw.rect(scr, (135, 135, 135), [560, 0, 130, 40], 2) #remove node
+        pygame.draw.rect(scr, (135, 135, 135), [820, 40, 80, 40], 2) #SAVE
+        pygame.draw.rect(scr, (135, 135, 135), [820, 80, 80, 40], 2)  #s-path
+        pygame.draw.rect(scr, (135, 135, 135), [820, 120, 80, 40], 2) #TSP
+        pygame.draw.rect(scr, (135, 135, 135), [820, 160, 80, 40], 2) #Center
+
+
+
+    def write_in_rect(self,scr):
+        font = pygame.font.SysFont('Arial', 25)
+        scr.blit(font.render('load', True, (255, 0, 0)), (842, 5))
+        scr.blit(font.render('add node', True, (255, 0, 0)), (705, 5))
+        scr.blit(font.render('remove node', True, (255, 0, 0)), (565, 5))
+        scr.blit(font.render('save', True, (255, 0, 0)), (842, 45))
+        scr.blit(font.render('s-path', True, (255, 0, 0)), (835, 90))
+        scr.blit(font.render('TSP', True, (255, 0, 0)), (837, 130))
+        scr.blit(font.render('Center', True, (255, 0, 0)), (827, 170))
+
+
+    def draw_nodes(self, scr):
+        for node in self.graph.nodes.values():
+            x = self.my_scale(node.x(), x=True)
+            y = self.my_scale(node.y(), y=True)
+            t = (x, y)
+            pygame.draw.circle(scr, RGB(40, 40, 40), t, 6)
+
+    def draw_edges(self,scr):
+        for e in self.graph.nodes.values():
+            src_x = e.x()
+            src_y = e.y()
+            list_out = self.graph.all_out_edges_of_node(e.id)
+            src_x = self.my_scale(src_x, x=True)
+            src_y = self.my_scale(src_y, y=True)
+            for edge in list_out:
+                dest_x = self.graph.nodes.get(edge).x()
+                dest_y = self.graph.nodes.get(edge).y()
+                dest_x = self.my_scale(dest_x, x=True)
+                dest_y = self.my_scale(dest_y, y=True)
+                pygame.draw.line(scr, RGB(40, 40, 40),
+                            (src_x, src_y), (dest_x, dest_y))
 
     def my_scale(self, data, x=False, y=False ):
         if x:
@@ -242,11 +273,9 @@ class GraphAlgo(GraphAlgoInterface):
         if y:
             return self.scale(data, 50, 600-50 , self.min_y(), self.max_y())
 
+
+
     def scale(self , data ,  min_screen, max_screen, min_data, max_data):
-        """
-         get the scaled data with proportions min_data, max_data
-         relative to min and max screen dimensions
-         """
         return ((data - min_data) / (max_data - min_data)) * (max_screen - min_screen) + min_screen
 
     def min_x(self):

@@ -57,7 +57,7 @@ def check1():
     :return:
     """
     g_algo = GraphAlgo()  # init an empty graph - for the GraphAlgo
-    file = '../data/A5.json'
+    file = '../data/G1.json'
     g_algo.load_from_json(file)  # init a GraphAlgo from a json file
     print(g_algo.shortest_path(2, 15))
     print(g_algo.shortest_path(3, 1))
