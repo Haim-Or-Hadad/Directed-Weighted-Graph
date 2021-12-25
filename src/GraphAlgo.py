@@ -5,7 +5,7 @@ import sys
 from ctypes.wintypes import RGB
 from queue import PriorityQueue
 from typing import List
-
+import easygui
 import pygame
 
 from GraphAlgoInterface import GraphAlgoInterface
@@ -183,6 +183,7 @@ class GraphAlgo(GraphAlgoInterface):
         pygame.init()
         scr = pygame.display.set_mode((900, 600))
         pygame.font.init()
+        font = pygame.font.SysFont('Arial', 25)
         FONT = pygame.font.SysFont('Our Graph', 20, bold=True)
         run = True
         while run:
@@ -195,25 +196,45 @@ class GraphAlgo(GraphAlgoInterface):
                 y = self.my_scale(node.y(), y = True)
                 t = (x, y)
                 pygame.draw.circle(scr, RGB(40, 40, 40), t, 6)
-            # for e in self.edges:
-            #     # find the edge nodes
-            #     src = next(n for n in graph.nodes if n.id == e.src)
-            #     dest = next(n for n in graph.nodes if n.id == e.dest)
-            #
-            #     # scaled positions
-            #     src_x = my_scale(src.pos.x, x=True)
-            #     src_y = my_scale(src.pos.y, y=True)
-            #     dest_x = my_scale(dest.pos.x, x=True)
-            #     dest_y = my_scale(dest.pos.y, y=True)
-            #
-            #     # draw the line
-            #     pygame.draw.line(screen, Color(61, 72, 126),
-            #                      (src_x, src_y), (dest_x, dest_y))
+            for e in self.graph.nodes.values():
+                src_x = e.x()
+                src_y = e.y()
+                list_out = self.graph.all_out_edges_of_node(e.id)
+                for edge in list_out:
+                    dest_x = self.graph.nodes.get(edge).x()
+                    dest_y = self.graph.nodes.get(edge).y()
+
+                src_x = self.my_scale(src_x, x=True)
+                src_y = self.my_scale(src_y, y=True)
+                dest_x = self.my_scale(dest_x, x=True)
+                dest_y = self.my_scale(dest_y, y=True)
+
+
+                pygame.draw.line(scr, RGB(40, 40, 40),
+                                 (src_x, src_y), (dest_x, dest_y))
+                # pygame.draw.polygon(scr, (0, 0, 0),
+                #                     ((src_x, src_y),
+                #                      (dest_x, dest_y),
+                #                      (src_x+1, src_y+1), (dest_x-1, dest_y-1), (dest_x, dest_y)), 0)
+                self.addRect(scr)
+                scr.blit(font.render('load', True, (255,0,0)), (842,0))
+                #     if e.type == pygame.MOUSEBUTTONDOWN:
+                #         pos = pygame.mouse.get_pos()
+                #         if 700 < pos[0] < 829 and 0 < pos[1] < 25:
+                #             str = easygui.enterbox("name:")
+                #             self.load_from_json("data/"+ str +".json")
+
+
+
+
+
             pygame.display.update()
 
         pygame.quit()
         sys.exit()
 
+    def addRect(self,scr):
+        pygame.draw.rect(scr , (135,135,135),[829, 0, 70,30], 2)
 
     def my_scale(self, data, x=False, y=False ):
         if x:

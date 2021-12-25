@@ -19,10 +19,18 @@ class Node:
         self.max_weight = 0
 
     def x(self):
+        """
+        :returns x position of node
+        :return int
+        """
         list = self.pos.split(",")
         return float(list[0])
 
     def y(self):
+        """
+         :returns y position of node
+         :return int
+         """
         list = self.pos.split(",")
         return float(list[1])
 
