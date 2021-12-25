@@ -15,8 +15,8 @@ In this UML we are planning how the project will look like. <br/>
 ## src 
 ### Node
 Node this class that represents  set of operations applicable on a node (vertex) in a (directional) weighted graph.<br/>
- ***new fields:***
- -private tuple pos - position of the node.
+ ***new fields:*** <br/>
+- private tuple pos - position of the node.
 - private int id - the key that will be useful for the structure of graph.
 - private double weight- the weight of the node for the algorithm.
 - private String Info.
