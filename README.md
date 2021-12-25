@@ -39,29 +39,55 @@ add_connect_out       | add edge between this node to neighbor node | O(1)
 add_connect_in           | add edge that connect to this node | O(1)
 __str__         | print the node | O(1)
 __repr__                  | print the node | O(1)  <br/>
-### Graph
-Graph this class that build the new graph . By use in nodes  we build a new structure that represent the new graph. <br/>
-The class implement the interface **GraphAlgoInterface**, This interface represents a Directional Weighted Graph <br/>
+### DiGraph
+DiGraph this class that build the new graph . By use in nodes  we build a new structure that represent the new graph. <br/>
+The class implement the interface **GraphInterface**, This interface represents a Directional Weighted Graph <br/>
 The interface has a road-system or communication network in mind - and should support a large number of nodes . our implemention <br/>
 based on an two dictionary that save all the edges in the graph. <br/>
 ***New Fields*** <br/>
 - nodes -> dict()
 - num_of_edge -> int
-- mc -> int </br>
+- mc -> int <br/>
+
  Methods       | Performs | Complexity
 --------------------------|-----------------------------------------|---------
-Graph() | default constructor | O(1)
-Graph(DirectedWeightedGraph G) | Deep copy constructor of a new graph |(1)O(n+e)
-getNode(int key)               | Returns the node_data by the node_id(key). |(2) O(1)
-getEdge(int src, int dest)     | Returns the data of the edge (src,dest). | (3) O(1)
-addNode(NodeData n)            | Adds a new node to the graph with the given node_data. |(4) O(1)
-connect(int src, int dest, double w)  | Return the weight of this edge (positive value). |(5) O(1)
-nodeIter()                            |This method returns an Iterator for the nodes hashmap |
-edgeIter()                    | This method returns an Iterator for all the edges in this graph. |
-edgeIter(int node_id)         | This method returns an Iterator for edges getting out of the given node |
-removeNode(int key)           |  Deletes the node (with the given ID) from the graph | (6) O(k), V.degree=k
-removeEdge(int src, int dest) |  Deletes the edge from the graph |(7) O(1)
-nodeSize() |  Returns the number of vertices (nodes) in the graph. | O(1)
-edgeSize() |  Returns the number of edges (assume directional graph). | O(1)
-getMC() |  Returns the Mode Count - for testing changes in the graph. | O(1)
+__init__ | create a new object of graph | O(1)
+v_size| return the number of nodes in graph |O(1)
+e_size               | return the number of edges in graph |O(1)
+get_all_v     | return a dictionary of all the nodes in the Graph |O(1)
+all_in_edges_of_node(id1: int)           | return all the nodes that enter to the node |O(1)
+all_out_edges_of_node(id1: int)  | Return all the nodes that go out from node |O(1)
+get_mc                            |Returns the current version of this graph | O(1)
+add_edge(id1: int, id2: int, weight: float)                    | Adds an edge to the graph  | O(1)
+add_node(node_id: int, pos: tuple = None)         | Adds a node to the graph | O(1)
+remove_node(node_id: int)           |  Removes a node from the graph  | O(n)
+removeEdge(node id1 :int  , node id2: int) |  Removes an edge from the graph| O(1)
+__repr__ |  print method | O(1)  <br/>
+
+### GraphAlgo
+GraphAlgo is class that run algorithms on the graph. the class implement the interface **GraphAlgoInteface**.<br/>
+This interface represents a Directed (positive) Weighted Graph Theory Algorithms that includes 6 algorithms. <br/>
+
+
+ Methods       | Performs | Complexity
+--------------------------|-----------------------------------------|---------
+__init__ | create a new object of graph | O(1)
+get_graph| return the number of nodes in graph | O(1)
+load_from_json(file_name: str)               | Loads a graph from a json file | O(n) or O(e)
+save_to_json     | Saves the graph in JSON format to a file |O(n) or O(e)
+shortest_path(id1: int, id2: int)           | Returns the shortest path from node id1 to node id2 using Dijkstra's Algorithm | ?
+TSP(self, node_lst: List[int])  | Finds the shortest path that visits all the nodes in the list | ?
+centerPoint               |Finds the node that has the shortest distance to it's farthest node | ?
+plot_graph                    | Plots the graph  | ?   <br/>
+
+### Elaboration
+- load_from_json - this algorithm Loads a graph from a json file . firstly we run over all the nodes in add them to the graph <br/>
+and after this we add all edges to graph , so if there are more edges than nodes the run time complexity is O(e), otherwise <br/>
+it's O(n) <br/>
+- save_to_json - this algorithm Saves the graph in JSON format to a file . the time complexity is the same like load function <br/>
+from the same reasons. <br/>
+-shortest_path - <br/>
+-TSP-  <br/>
+-centerPoint-   <br/>
+-plot_graph <br/>
 
