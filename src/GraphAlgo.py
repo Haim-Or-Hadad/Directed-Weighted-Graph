@@ -5,7 +5,7 @@ import sys
 from ctypes.wintypes import RGB
 from queue import PriorityQueue
 from typing import List
-import easygui
+from easygui import *
 import pygame
 
 from GraphAlgoInterface import GraphAlgoInterface
@@ -190,10 +190,10 @@ class GraphAlgo(GraphAlgoInterface):
                 if e.type == pygame.QUIT:
                     run = False
                 scr.blit(bg, (0, 0))
-                self.addRect(scr)
-                self.write_in_rect(scr)
-
-                self.algorithms_buttons(e ,scr)
+                self.algorithms_buttons(e, scr)
+                if e.type == MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                    self.operation(pos)
             self.draw_nodes(scr)
             self.draw_edges(scr)
             pygame.display.update()
@@ -201,48 +201,53 @@ class GraphAlgo(GraphAlgoInterface):
         pygame.quit()
         sys.exit()
 
-    def algorithms_buttons(self,e , scr):
-        if e.type == pygame.MOUSEBUTTONDOWN:
-            click_place = pygame.mouse.get_pos()
-            #file_path = filedialog.askopenfilename()
-            if 820 < click_place[0] < 900 and 0 < click_place[1] < 40:
-                file_path = filedialog.askopenfilename()
-                self.load_from_json(file_path)
-            #SAVE BUTTON
-            if 820 < click_place[0] < 900 and 40 < click_place[1] < 80:
-                pass
-            if (820 >= click_place[0] or click_place[0] >= 900) or (80 >= click_place[1] or click_place[1] >= 120):
-                pass
-            else:
-                self.graph.remove_node(1)
-            if 820 < click_place[0] < 900 and 120 < click_place[1] < 160:
-                pass
-            if 820 < click_place[0] < 900 and 160 < click_place[1] < 200:
-                pass
+    def algorithms_buttons(self, e, scr):
+        save = Button('save', (100, 50))
+        load = Button('load', (100, 50))
+        TSP = Button('TSP', (100, 50))
+        shortest_path = Button('s-path', (100, 50))
+        center = Button('center', (100, 50))
+        #######save########
+        save.render(scr, (800, 0))
+        #######load########
+        load.render(scr, (800, 50))
+        #####TSP#########
+        TSP.render(scr, (800, 100))
+        #####shortest_path####
+        shortest_path.render(scr, (800, 150))
+        ######center####
+        center.render(scr, (800, 200))
+        add = Button("add node", (160, 60))
+        remove = Button("remove node", (160, 60))
+        #####add######
+        add.render(scr, (740, 540))
+        #####remove######
+        remove.render(scr, (580, 540))
 
+    def operation(self, pos):
+        if 800 < pos[0] < 900 and 0 < pos[1] < 50:  # for save function
+            pass
+        if 800 < pos[0] < 900 and 50 < pos[1] < 100:  # for load func
+            pass
+        if 800 < pos[0] < 900 and 100 < pos[1] < 150:  # for TSP
+            pass
+        if 800 < pos[0] < 900 and 150 < pos[1] < 200:  # for s-path
+            pass
+        if 800 < pos[0] < 900 and 200 < pos[1] < 250:  # for center
+            pass
+        if 740 < pos[0] < 900 and 540 < pos[1] < 600: # for add node
+            title = "Add Node"
+            _id = enterbox("enter node_id that yow want to add ", title )
+            _x = enterbox("enter x",title)
+            _y = enterbox("enter y", title )
+            _pos = (_x+","+_y+","+'0')
+            self.graph.add_node(id , _pos)
+        if 590 < pos[0] < 740 and 540 <pos[1] < 600 : #for remove node
+            title = "Remove Node"
+            output = enterbox("enter node_id that yow want to remove", title)
+            message = str(output)
+            self.graph.remove_node(int(message))
 
-
-
-    def addRect(self,scr):
-        pygame.draw.rect(scr , (135,135,135),[820, 0, 80, 40], 2) #LOAD
-        pygame.draw.rect(scr, (135, 135, 135), [690, 0, 130, 40], 2) #add node
-        pygame.draw.rect(scr, (135, 135, 135), [560, 0, 130, 40], 2) #remove node
-        pygame.draw.rect(scr, (135, 135, 135), [820, 40, 80, 40], 2) #SAVE
-        pygame.draw.rect(scr, (135, 135, 135), [820, 80, 80, 40], 2)  #s-path
-        pygame.draw.rect(scr, (135, 135, 135), [820, 120, 80, 40], 2) #TSP
-        pygame.draw.rect(scr, (135, 135, 135), [820, 160, 80, 40], 2) #Center
-
-
-
-    def write_in_rect(self,scr):
-        font = pygame.font.SysFont('Arial', 25)
-        scr.blit(font.render('load', True, (255, 0, 0)), (842, 5))
-        scr.blit(font.render('add node', True, (255, 0, 0)), (705, 5))
-        scr.blit(font.render('remove node', True, (255, 0, 0)), (565, 5))
-        scr.blit(font.render('save', True, (255, 0, 0)), (842, 45))
-        scr.blit(font.render('s-path', True, (255, 0, 0)), (835, 90))
-        scr.blit(font.render('TSP', True, (255, 0, 0)), (837, 130))
-        scr.blit(font.render('Center', True, (255, 0, 0)), (827, 170))
 
 
     def draw_nodes(self, scr):
@@ -252,7 +257,7 @@ class GraphAlgo(GraphAlgoInterface):
             t = (x, y)
             pygame.draw.circle(scr, RGB(40, 40, 40), t, 6)
 
-    def draw_edges(self,scr):
+    def draw_edges(self, scr):
         for e in self.graph.nodes.values():
             src_x = e.x()
             src_y = e.y()
@@ -265,17 +270,15 @@ class GraphAlgo(GraphAlgoInterface):
                 dest_x = self.my_scale(dest_x, x=True)
                 dest_y = self.my_scale(dest_y, y=True)
                 pygame.draw.line(scr, RGB(40, 40, 40),
-                            (src_x, src_y), (dest_x, dest_y))
+                                 (src_x, src_y), (dest_x, dest_y))
 
-    def my_scale(self, data, x=False, y=False ):
+    def my_scale(self, data, x=False, y=False):
         if x:
-            return self.scale(data, 50, 680 , self.min_x(), self.max_x())
+            return self.scale(data, 50, 680, self.min_x(), self.max_x())
         if y:
-            return self.scale(data, 50, 600-50 , self.min_y(), self.max_y())
+            return self.scale(data, 50, 600 - 50, self.min_y(), self.max_y())
 
-
-
-    def scale(self , data ,  min_screen, max_screen, min_data, max_data):
+    def scale(self, data, min_screen, max_screen, min_data, max_data):
         return ((data - min_data) / (max_data - min_data)) * (max_screen - min_screen) + min_screen
 
     def min_x(self):
