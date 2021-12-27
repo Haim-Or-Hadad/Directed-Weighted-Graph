@@ -82,12 +82,12 @@ plot_graph                    | Plots the graph  | ?
 dijkstra(src: int)           | Find the distance from src node to all the nodes in the graph | O(e + n*log n)<br/>
 
 ### Elaboration
-- load_from_json - This algorithm Loads a graph from a json file . firstly we run over all the nodes in the json file and add them to the graph <br/>
+- <b>load_from_json</b> - This algorithm Loads a graph from a json file . firstly we run over all the nodes in the json file and add them to the graph <br/>
 and after this we add all edges to graph , so if there are more edges than nodes the run time complexity is O(e), otherwise <br/>
 it's O(n) <br/>
-- save_to_json - This algorithm Saves the graph in JSON format to a file . the function go over the nodes and for each node it save all the edges going out of the node. <br/> <br/>
--shortest_path - Shortest path funtion active dijkstra algorithm for the id1 node and find the shortest path according to the results <br/>
--TSP- Tsp create a list with all the possible permutations, after that the function run over each permutations take the first node in the list activate a dijkstra algorithm once and sum the distances for each node in the list.   <br/>
--centerPoint- Center point run dijkstra algorithm on each node and update the max weight that save the distance to the farthest node, after that it run over all the nodes and return the  node that has the shortest distance of all the max weight in the graph.       <br/>
--plot_graph <br/>
+- <b>save_to_json</b> - This algorithm Saves the graph in JSON format to a file . the function go over the nodes and for each node it save all the edges going out of the node. <br/> <br/>
+- <b>shortest_path</b> - Shortest path funtion active dijkstra algorithm for the id1 node and find the shortest path according to the results <br/>
+- <b>TSP</b> - Tsp create a list with all the possible permutations, after that the function run over each permutations take the first node in the list activate a dijkstra algorithm once and sum the distances for each node in the list.   <br/>
+- <b>centerPoint</b> - Center point run dijkstra algorithm on each node and update the max weight that save the distance to the farthest node, after that it run over all the nodes and return the  node that has the shortest distance of all the max weight in the graph.       <br/>
+- <b>plot_graph</b> - <br/>
 
