@@ -193,7 +193,7 @@ class GraphAlgo(GraphAlgoInterface):
                 self.algorithms_buttons(e, scr)
                 if e.type == MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
-                    self.operation(pos)
+                    self.operation(pos , scr)
             self.draw_nodes(scr)
             self.draw_edges(scr)
             pygame.display.update()
@@ -224,7 +224,7 @@ class GraphAlgo(GraphAlgoInterface):
         #####remove######
         remove.render(scr, (580, 540))
 
-    def operation(self, pos):
+    def operation(self, pos , scr):
         if 800 < pos[0] < 900 and 0 < pos[1] < 50:  # for save function
             pass
         if 800 < pos[0] < 900 and 50 < pos[1] < 100:  # for load func
@@ -234,12 +234,15 @@ class GraphAlgo(GraphAlgoInterface):
         if 800 < pos[0] < 900 and 150 < pos[1] < 200:  # for s-path
             pass
         if 800 < pos[0] < 900 and 200 < pos[1] < 250:  # for center
-            pass
+            t = self.centerPoint()
+            _x = self.graph.nodes.get(t[0]).x()
+            _y = self.graph.nodes.get(t[0]).y()
+            _x = self.my_scale(_x, x=True)
+            _y = self.my_scale(_y, y=True)
+            tup = (_x, _y)
+            pygame.draw.circle(scr, RGB(200, 80,0), tup, 10)
         if 740 < pos[0] < 900 and 540 < pos[1] < 600: # for add node
-            title = "Add Node"
-            _id = enterbox("enter node_id that yow want to add ", title )
-            _x = enterbox("enter x",title)
-            _y = enterbox("enter y", title )
+            _id,_x ,_y = enterbox("enter new node_id "),enterbox("enter x") ,enterbox("enter y")
             _pos = (_x+","+_y+","+'0')
             self.graph.add_node(id , _pos)
         if 590 < pos[0] < 740 and 540 <pos[1] < 600 : #for remove node
