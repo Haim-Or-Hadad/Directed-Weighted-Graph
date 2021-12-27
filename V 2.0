@@ -23,7 +23,7 @@ Node this class that represents  set of operations applicable on a node (vertex)
 - private int Tag- useful for the algorithms.
 - private connect_out - dict that save all vertexts the go out from specific node.
 - private connect_int - dict that save all vertexts the go in to specific node.
--  private max_weight - save the max weight of path for the algorithm.    <br/>
+-  private max_weight - save distance of the current node to it's farthest node in the garph.    <br/>
 
  Methods       | Performs | Complexity time 
 --------------------------|----------------------|--------
@@ -73,21 +73,21 @@ This interface represents a Directed (positive) Weighted Graph Theory Algorithms
 --------------------------|-----------------------------------------|---------
 __init__ | create a new object of graph | O(1)
 get_graph| return the number of nodes in graph | O(1)
-load_from_json(file_name: str)               | Loads a graph from a json file | O(n) or O(e)
-save_to_json     | Saves the graph in JSON format to a file |O(n) or O(e)
-shortest_path(id1: int, id2: int)           | Returns the shortest path from node id1 to node id2 using Dijkstra's Algorithm | ?
-TSP(self, node_lst: List[int])  | Finds the shortest path that visits all the nodes in the list | ?
-centerPoint               |Finds the node that has the shortest distance to it's farthest node | ?
-plot_graph                    | Plots the graph  | ?   <br/>
+load_from_json(file_name: str)               | Loads a graph from a json file | O(n+e)
+save_to_json     | Saves the graph in JSON format to a file |O(n*e)
+shortest_path(id1: int, id2: int)           | Returns the shortest path from node id1 to node id2 using Dijkstra's Algorithm | O(e + n*log n)
+TSP(self, node_lst: List[int])  | Finds the shortest path that visits all the nodes in the list | O(n!*(e + n*log n))
+centerPoint               |Finds the node that has the shortest distance to it's farthest node | O(n(e + n*log n))
+plot_graph                    | Plots the graph  | ?   
+dijkstra(src: int)           | Find the distance from src node to all the nodes in the graph | O(e + n*log n)<br/>
 
 ### Elaboration
-- load_from_json - this algorithm Loads a graph from a json file . firstly we run over all the nodes in add them to the graph <br/>
+- load_from_json - This algorithm Loads a graph from a json file . firstly we run over all the nodes in the json file and add them to the graph <br/>
 and after this we add all edges to graph , so if there are more edges than nodes the run time complexity is O(e), otherwise <br/>
 it's O(n) <br/>
-- save_to_json - this algorithm Saves the graph in JSON format to a file . the time complexity is the same like load function <br/>
-from the same reasons. <br/>
--shortest_path - <br/>
--TSP-  <br/>
--centerPoint-   <br/>
+- save_to_json - This algorithm Saves the graph in JSON format to a file . the function go over the nodes and for each node it save all the edges going out of the node. <br/> <br/>
+-shortest_path - Shortest path funtion active dijkstra algorithm for the id1 node and find the shortest path according to the results <br/>
+-TSP- Tsp create a list with all the possible permutations, after that the function run over each permutations take the first node in the list activate a dijkstra algorithm once and sum the distances for each node in the list.   <br/>
+-centerPoint- Center point run dijkstra algorithm on each node and update the max weight that save the distance to the farthest node, after that it run over all the nodes and return the  node that has the shortest distance of all the max weight in the graph.       <br/>
 -plot_graph <br/>
 
