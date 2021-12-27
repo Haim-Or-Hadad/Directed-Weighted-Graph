@@ -2,6 +2,7 @@ import itertools
 import json
 import random
 import sys
+from cmath import pi
 from ctypes.wintypes import RGB
 from queue import PriorityQueue
 from typing import List
@@ -44,7 +45,7 @@ class GraphAlgo(GraphAlgoInterface):
                     else:
                         x = random.uniform(32, 33)
                         y = random.uniform(34, 36)
-                        my_graph.add_node(node['id'], (x, y))
+                        my_graph.add_node(node['id'], (x, y,0))
 
                 for edge in g_dict['Edges']:
                     my_graph.add_edge(edge["src"], edge["dest"], edge["w"])
@@ -74,7 +75,7 @@ class GraphAlgo(GraphAlgoInterface):
                     Edges.append({"src": node.id, "w": weight, "dest": edges_Dest})
             # create a dictionary contain Node list and Edge list
             json_dict = {"Nodes": Nodes, "Edges": Edges}
-            with open(file_name + ".json", 'w') as file:
+            with open("../data/" + file_name + ".json", 'w') as file:
                 # create the json file
                 json.dump(json_dict, indent=4, fp=file)
         except IOError as e:
@@ -193,7 +194,7 @@ class GraphAlgo(GraphAlgoInterface):
                 self.algorithms_buttons(e, scr)
                 if e.type == MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
-                    self.operation(pos , scr)
+                    self.operation(pos, scr)
             self.draw_nodes(scr)
             self.draw_edges(scr)
             pygame.display.update()
@@ -219,20 +220,42 @@ class GraphAlgo(GraphAlgoInterface):
         center.render(scr, (800, 200))
         add = Button("add node", (160, 60))
         remove = Button("remove node", (160, 60))
+        add_edge = Button("add edge", (160,60))
+        remove_edge = Button("remove edge", (160,60))
         #####add######
         add.render(scr, (740, 540))
         #####remove######
         remove.render(scr, (580, 540))
+        ####add edge###
+        add_edge.render(scr,(740,480))
+        ####remove edge###
+        remove_edge.render(scr , (740, 420))
 
-    def operation(self, pos , scr):
+
+    def operation(self, pos, scr):
         if 800 < pos[0] < 900 and 0 < pos[1] < 50:  # for save function
-            pass
+            title = "save file"
+            output = enterbox("enter new name of file", title)
+            message = str(output)
+            self.save_to_json(message)
         if 800 < pos[0] < 900 and 50 < pos[1] < 100:  # for load func
-            pass
+            root = Tk()
+            file_path = filedialog.askopenfilename()
+            root.destroy()
+            self.load_from_json(file_path)
         if 800 < pos[0] < 900 and 100 < pos[1] < 150:  # for TSP
-            pass
+            list_for_tsp = list((enterbox("enter list with comma between every node")).split())
+            tsp = self.TSP(list_for_tsp)
+            title = "Message Box"
+            message = "Entered Name : " + str(tsp)
+            msg = msgbox(message, title)
+
         if 800 < pos[0] < 900 and 150 < pos[1] < 200:  # for s-path
-            pass
+            _id1, _id2 = enterbox("enter id1"), enterbox("enter id2")
+            answer = self.shortest_path(int(_id1), int(_id2))
+            title = "Message Box"
+            message = "Entered Name : " + str(answer)
+            msg = msgbox(message, title)
         if 800 < pos[0] < 900 and 200 < pos[1] < 250:  # for center
             t = self.centerPoint()
             _x = self.graph.nodes.get(t[0]).x()
@@ -240,18 +263,25 @@ class GraphAlgo(GraphAlgoInterface):
             _x = self.my_scale(_x, x=True)
             _y = self.my_scale(_y, y=True)
             tup = (_x, _y)
-            pygame.draw.circle(scr, RGB(200, 80,0), tup, 10)
-        if 740 < pos[0] < 900 and 540 < pos[1] < 600: # for add node
-            _id,_x ,_y = enterbox("enter new node_id "),enterbox("enter x") ,enterbox("enter y")
-            _pos = (_x+","+_y+","+'0')
-            self.graph.add_node(id , _pos)
-        if 590 < pos[0] < 740 and 540 <pos[1] < 600 : #for remove node
+            pygame.draw.circle(scr, RGB(200, 80, 0), tup, 10)
+        if 740 < pos[0] < 900 and 540 < pos[1] < 600:  # for add node
+            _id, _x, _y = int(enterbox("enter new node_id ")), enterbox("enter x"), enterbox("enter y")
+            _pos = (_x + "," + _y + "," + '0')
+            self.graph.add_node(_id, _pos)
+        if 590 < pos[0] < 740 and 540 < pos[1] < 600:  # for remove node
             title = "Remove Node"
             output = enterbox("enter node_id that yow want to remove", title)
             message = str(output)
             self.graph.remove_node(int(message))
-
-
+        if 740 < pos[0] < 900 and 480 < pos[1] < 540:
+            title = "Add Edge"
+            _id1, _id2 , w = int(enterbox("enter id1",title))\
+                ,int(enterbox("enter id2 ", title)),float(enterbox("weight"))
+            self.graph.add_edge(_id1,_id2,w)
+        if 740 < pos[0] < 900 and 420 < pos[1] < 480:
+            title = "Remove Edge"
+            _id1, _id2 = int(enterbox("enter id1",title)),int(enterbox("enter id2 ", title))
+            self.graph.remove_edge(_id1,_id2)
 
     def draw_nodes(self, scr):
         for node in self.graph.nodes.values():
@@ -272,8 +302,30 @@ class GraphAlgo(GraphAlgoInterface):
                 dest_y = self.graph.nodes.get(edge).y()
                 dest_x = self.my_scale(dest_x, x=True)
                 dest_y = self.my_scale(dest_y, y=True)
-                pygame.draw.line(scr, RGB(40, 40, 40),
-                                 (src_x, src_y), (dest_x, dest_y))
+                # t1,t2 = (src_x, src_y), (dest_x, dest_y)
+                pygame.draw.line(scr, RGB(0,0,0),(src_x, src_y), (dest_x, dest_y), 1)
+                rotation = math.degrees(math.atan2(src_y - dest_y, dest_x - src_x)) + 90
+                pygame.draw.polygon(scr, (120,120,130), (
+                    (dest_x + 0.5 * math.sin(math.radians(rotation)), dest_y + 0.5 * math.cos(math.radians(rotation))),
+                    (
+                        dest_x + 15 * math.sin(math.radians(rotation - 158)),
+                        dest_y + 15 * math.cos(math.radians(rotation - 158))),
+                    (dest_x + 15 * math.sin(math.radians(rotation + 158)),
+                     dest_y + 15 * math.cos(math.radians(rotation + 158)))))
+
+
+                # pygame.draw.line(scr, RGB(40, 40, 40),
+                #                  (src_x, src_y), (dest_x, dest_y))
+
+    def draw_arrow(self, screen, colour, start, end):
+        pygame.draw.line(screen, colour, start, end, 2)
+        rotation = math.degrees(math.atan2(start[1] - end[1], end[0] - start[0])) + 90
+        pygame.draw.polygon(screen, (255, 0, 0), (
+            (end[0] + 20 * math.sin(math.radians(rotation)), end[1] + 20 * math.cos(math.radians(rotation))),
+            (
+            end[0] + 20 * math.sin(math.radians(rotation - 120)), end[1] + 20 * math.cos(math.radians(rotation - 120))),
+            (end[0] + 20 * math.sin(math.radians(rotation + 120)),
+             end[1] + 20 * math.cos(math.radians(rotation + 120)))))
 
     def my_scale(self, data, x=False, y=False):
         if x:

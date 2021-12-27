@@ -37,7 +37,7 @@ class DiGraph(GraphInterface):
         """
         if self.nodes.get(id1) is None:
             raise Exception('node:{}'.format(id1))
-        return self.nodes.get(self, id1).connect_in()
+        return self.nodes.get(id1).connect_in
 
     def all_out_edges_of_node(self, id1: int) -> dict:
         """return a dictionary of all the nodes connected from node_id , each node is represented using a pair

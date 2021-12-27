@@ -23,16 +23,26 @@ class Node:
         :returns x position of node
         :return int
         """
-        list= self.pos.split(",")
-        return float(list[0])
+        if type(self.pos) == tuple:
+            return float(self.pos[0])
+        elif type(self.pos) == list:
+            return float(self.pos[0])
+        else:
+            check = list(self.pos.split(","))
+            return float(check[0])
 
     def y(self):
         """
          :returns y position of node
          :return int
          """
-        list = self.pos.split(",")
-        return float(list[1])
+        if type(self.pos) == tuple:
+            return float(self.pos[1])
+        elif type(self.pos) == list:
+            return float(self.pos[1])
+        else:
+            check = list(self.pos.split(","))
+            return float(check[1])
 
     def get_id(self):
         """
@@ -87,7 +97,6 @@ class Node:
 
     def __repr__(self):
         return f"pos:{str(self.pos)[1:-1]}\n"
-
 
 # root_path = os.path.dirname(os.path.abspath(__file__))
 #
