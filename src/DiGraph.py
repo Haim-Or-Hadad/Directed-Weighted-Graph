@@ -134,11 +134,3 @@ class DiGraph(GraphInterface):
 
         return gra
 
-# g = DiGraph()# for f in g.edges:
-#     print(f.src)
-# print(g.nodes[1].id)
-# for e in edges:
-#     print(e)
-#
-# for n in nodes:
-#     print(n)
