@@ -12,15 +12,6 @@ on him. <br/>
  Ilan Gold <br/>
  Haim Or Hadad
 
-comparing of load,save and shortest path between java and python on 1000 Nodes: <br/>
-<img src="https://user-images.githubusercontent.com/93033782/147558606-55559f97-0857-44c3-9a35-347567500b0d.png" width="350"> <br/>
- comparing of TSP and center between java and python on 1000Nodes:   <br/>
-<img src="https://user-images.githubusercontent.com/93033782/147559106-66ea5549-b57a-466d-95c6-571c87a08374.png" width="350"> <br/>
-comparing of load,save and shortest path between java and python on 10000 Nodes: <br/>
-<img src="https://user-images.githubusercontent.com/93033782/147559569-92ad8fc7-5aa5-41ec-b5e4-1f784d3ead65.png" width="350"> <br/>
- comparing of TSP and center between java and python on 10000 Nodes:   <br/>
- <img src="https://user-images.githubusercontent.com/93033782/147559811-7eff10b4-a4a3-418d-b2ad-d3ca08d457bc.png" width="350"> <br/>
- 
 
 
      
