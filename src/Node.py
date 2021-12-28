@@ -93,10 +93,10 @@ class Node:
         self.connect_in[id] = weight
 
     def __str__(self):
-        return f"pos:{str(self.pos)[1:-1]},id:{self.id}"
+        return f"{self.id}: |edges out|{str(len(self.connect_out))},|edges in|{str(len(self.connect_in))}"
 
     def __repr__(self):
-        return f"pos:{str(self.pos)[1:-1]}\n"
+        return f"{self.id}: |edges out|{str(len(self.connect_out))},|edges in|{str(len(self.connect_in))}"
 
 # root_path = os.path.dirname(os.path.abspath(__file__))
 #

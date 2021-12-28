@@ -1,19 +1,23 @@
 import itertools
 import json
+import math
 import random
 import sys
-from cmath import pi
 from ctypes.wintypes import RGB
 from queue import PriorityQueue
+from tkinter import filedialog, Tk
 from typing import List
 from easygui import *
 import pygame
+from pygame import MOUSEBUTTONDOWN
 
-from GraphAlgoInterface import GraphAlgoInterface
-from GraphInterface import GraphInterface
-from DiGraph import DiGraph
+from src.Button import Button
+from src.GraphAlgoInterface import GraphAlgoInterface
+from src.GraphInterface import GraphInterface
+from src.DiGraph import DiGraph
 
-bg = pygame.image.load("nodebook.jpg")
+bg = pygame.image.load("../src/nodebook.jpg")
+Icon = pygame.image.load("../src/graph_icon.jpg")
 
 WIDTH, HEIGHT = 900, 720
 
@@ -22,6 +26,7 @@ class GraphAlgo(GraphAlgoInterface):
 
     def __init__(self, graph: DiGraph = DiGraph()):
         self.graph = graph
+
 
     def get_graph(self) -> GraphInterface:
         """
@@ -45,7 +50,7 @@ class GraphAlgo(GraphAlgoInterface):
                     else:
                         x = random.uniform(32, 33)
                         y = random.uniform(34, 36)
-                        my_graph.add_node(node['id'], (x, y,0))
+                        my_graph.add_node(node['id'], (x, y, 0))
 
                 for edge in g_dict['Edges']:
                     my_graph.add_edge(edge["src"], edge["dest"], edge["w"])
@@ -83,6 +88,12 @@ class GraphAlgo(GraphAlgoInterface):
             return False
         return True
 
+    def __str__(self):
+        string = ''
+        for node in self.graph.nodes.items():
+            string += str(node)
+        return string
+
     def shortest_path(self, id1: int, id2: int) -> (float, list):
         """
         Returns the shortest path from node id1 to node id2 using Dijkstra's Algorithm
@@ -100,7 +111,7 @@ class GraphAlgo(GraphAlgoInterface):
         if weight == float('inf'):
             return float('inf'), []
         path = []
-        while curr_node.id is not id1:
+        while curr_node.id != id1:
             path.append(curr_node.id)
             tag = curr_node.tag
             curr_node = self.graph.nodes.get(tag)
@@ -115,17 +126,19 @@ class GraphAlgo(GraphAlgoInterface):
         :return: A list of the nodes id's in the path, and the overall distance
         """
         perm = list(itertools.permutations(node_lst))  # create a list with all the permutations
-        min_dist = sys.maxsize  # set the min distance to max
+        min_dist = math.inf  # set the min distance to max
         for perm in perm:  # go over all the permutations
             distance_sum = 0
             for nodes in range(len(perm) - 1):  # go over the nodes in the current permutation
-                src = perm[nodes]
-                dest = perm[nodes + 1]
+                src = int(perm[nodes])
+                dest = int(perm[nodes + 1])
                 # sum the distance of the shortest path going over all the nodes in the curr permutations
                 distance_sum += self.shortest_path(src, dest)[0]
-            if distance_sum < min_dist:
+            if distance_sum <= min_dist:
                 min_dist = distance_sum
                 ans = (perm, min_dist)
+                if min_dist == math.inf:
+                    ans = ([], min_dist)
 
         return ans
 
@@ -149,6 +162,7 @@ class GraphAlgo(GraphAlgoInterface):
         Plots the graph.
         If the nodes have a position, the nodes will be placed there.
         Otherwise, they will be placed in a random but elegant manner.
+        The random selection is written in the load from json function
         @return: None
         """
         # gui = GUI(self)
@@ -156,12 +170,21 @@ class GraphAlgo(GraphAlgoInterface):
         self.gui()
 
     def rest_tag_weight(self):
+        """
+        Rest tag and weight for dijkstra usage
+        """
         for node in self.graph.nodes.values():
             node.weight = float('inf')
             node.tag = -1
             node.info = "White"
 
-    def dijkstra(self, src: int) -> (float, list):
+    def dijkstra(self, src: int):
+        """
+        Dijkstra's algorithm is an algorithm for finding the shortest paths between nodes
+        in a graph,
+         :param src:source node
+          :return:update at each node the minimum weight of the shortest path from src
+        """
         self.rest_tag_weight()
         self.graph.nodes.get(src).weight = 0
         node_queue = PriorityQueue()
@@ -170,11 +193,11 @@ class GraphAlgo(GraphAlgoInterface):
             node = node_queue.get()[1]
             node.info = "Black"
             for neigh in node.connect_out:
-                if node.weight + node.connect_out[neigh] < self.graph.nodes[neigh].weight:
-                    self.graph.nodes.get(neigh).weight = node.weight + node.connect_out[neigh]
-                    self.graph.nodes.get(neigh).tag = node.id
                 if self.graph.nodes.get(neigh).info == "White":
-                    node_queue.put((self.graph.nodes.get(neigh).weight, self.graph.nodes.get(neigh)))
+                    if node.weight + node.connect_out[neigh] < self.graph.nodes[neigh].weight:
+                        self.graph.nodes.get(neigh).weight = node.weight + node.connect_out[neigh]
+                        self.graph.nodes.get(neigh).tag = node.id
+                        node_queue.put((self.graph.nodes.get(neigh).weight, self.graph.nodes.get(neigh)))
 
         for node in self.graph.nodes.values():
             if node.weight > self.graph.nodes.get(src).max_weight:
@@ -184,7 +207,8 @@ class GraphAlgo(GraphAlgoInterface):
         pygame.init()
         scr = pygame.display.set_mode((900, 600))
         pygame.font.init()
-        FONT = pygame.font.SysFont('Our Graph', 20, bold=True)
+        pygame.display.set_icon(Icon)
+        pygame.display.set_caption('Graph GUI')
         run = True
         while run:
             for e in pygame.event.get():
@@ -220,17 +244,16 @@ class GraphAlgo(GraphAlgoInterface):
         center.render(scr, (800, 200))
         add = Button("add node", (160, 60))
         remove = Button("remove node", (160, 60))
-        add_edge = Button("add edge", (160,60))
-        remove_edge = Button("remove edge", (160,60))
+        add_edge = Button("add edge", (160, 60))
+        remove_edge = Button("remove edge", (160, 60))
         #####add######
         add.render(scr, (740, 540))
         #####remove######
         remove.render(scr, (580, 540))
         ####add edge###
-        add_edge.render(scr,(740,480))
+        add_edge.render(scr, (740, 480))
         ####remove edge###
-        remove_edge.render(scr , (740, 420))
-
+        remove_edge.render(scr, (740, 420))
 
     def operation(self, pos, scr):
         if 800 < pos[0] < 900 and 0 < pos[1] < 50:  # for save function
@@ -244,7 +267,7 @@ class GraphAlgo(GraphAlgoInterface):
             root.destroy()
             self.load_from_json(file_path)
         if 800 < pos[0] < 900 and 100 < pos[1] < 150:  # for TSP
-            list_for_tsp = list((enterbox("enter list with comma between every node")).split())
+            list_for_tsp = list((enterbox("enter list with comma between every node")).split(","))
             tsp = self.TSP(list_for_tsp)
             title = "Message Box"
             message = "Entered Name : " + str(tsp)
@@ -263,7 +286,10 @@ class GraphAlgo(GraphAlgoInterface):
             _x = self.my_scale(_x, x=True)
             _y = self.my_scale(_y, y=True)
             tup = (_x, _y)
+            # message = "Center: " + str(t)
+            # msg = msgbox(message, "Center")
             pygame.draw.circle(scr, RGB(200, 80, 0), tup, 10)
+
         if 740 < pos[0] < 900 and 540 < pos[1] < 600:  # for add node
             _id, _x, _y = int(enterbox("enter new node_id ")), enterbox("enter x"), enterbox("enter y")
             _pos = (_x + "," + _y + "," + '0')
@@ -275,13 +301,13 @@ class GraphAlgo(GraphAlgoInterface):
             self.graph.remove_node(int(message))
         if 740 < pos[0] < 900 and 480 < pos[1] < 540:
             title = "Add Edge"
-            _id1, _id2 , w = int(enterbox("enter id1",title))\
-                ,int(enterbox("enter id2 ", title)),float(enterbox("weight"))
-            self.graph.add_edge(_id1,_id2,w)
+            _id1, _id2, w = int(enterbox("enter id1", title)) \
+                , int(enterbox("enter id2 ", title)), float(enterbox("weight"))
+            self.graph.add_edge(_id1, _id2, w)
         if 740 < pos[0] < 900 and 420 < pos[1] < 480:
             title = "Remove Edge"
-            _id1, _id2 = int(enterbox("enter id1",title)),int(enterbox("enter id2 ", title))
-            self.graph.remove_edge(_id1,_id2)
+            _id1, _id2 = int(enterbox("enter id1", title)), int(enterbox("enter id2 ", title))
+            self.graph.remove_edge(_id1, _id2)
 
     def draw_nodes(self, scr):
         for node in self.graph.nodes.values():
@@ -303,16 +329,15 @@ class GraphAlgo(GraphAlgoInterface):
                 dest_x = self.my_scale(dest_x, x=True)
                 dest_y = self.my_scale(dest_y, y=True)
                 # t1,t2 = (src_x, src_y), (dest_x, dest_y)
-                pygame.draw.line(scr, RGB(0,0,0),(src_x, src_y), (dest_x, dest_y), 1)
+                pygame.draw.line(scr, RGB(0, 0, 0), (src_x, src_y), (dest_x, dest_y), 1)
                 rotation = math.degrees(math.atan2(src_y - dest_y, dest_x - src_x)) + 90
-                pygame.draw.polygon(scr, (120,120,130), (
+                pygame.draw.polygon(scr, (120, 120, 130), (
                     (dest_x + 0.5 * math.sin(math.radians(rotation)), dest_y + 0.5 * math.cos(math.radians(rotation))),
                     (
                         dest_x + 15 * math.sin(math.radians(rotation - 158)),
                         dest_y + 15 * math.cos(math.radians(rotation - 158))),
                     (dest_x + 15 * math.sin(math.radians(rotation + 158)),
                      dest_y + 15 * math.cos(math.radians(rotation + 158)))))
-
 
                 # pygame.draw.line(scr, RGB(40, 40, 40),
                 #                  (src_x, src_y), (dest_x, dest_y))
@@ -323,10 +348,11 @@ class GraphAlgo(GraphAlgoInterface):
         pygame.draw.polygon(screen, (255, 0, 0), (
             (end[0] + 20 * math.sin(math.radians(rotation)), end[1] + 20 * math.cos(math.radians(rotation))),
             (
-            end[0] + 20 * math.sin(math.radians(rotation - 120)), end[1] + 20 * math.cos(math.radians(rotation - 120))),
+                end[0] + 20 * math.sin(math.radians(rotation - 120)),
+                end[1] + 20 * math.cos(math.radians(rotation - 120))),
             (end[0] + 20 * math.sin(math.radians(rotation + 120)),
              end[1] + 20 * math.cos(math.radians(rotation + 120)))))
-
+    #####Scale functions#######
     def my_scale(self, data, x=False, y=False):
         if x:
             return self.scale(data, 50, 680, self.min_x(), self.max_x())

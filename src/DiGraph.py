@@ -83,7 +83,7 @@ class DiGraph(GraphInterface):
         @return: True if the node was added successfully, False o.w.
         Note: if the node id already exists the node will not be added
         """
-        if node_id in self.nodes:
+        if node_id in self.nodes.keys():
             return False
         self.mc += 1
         node = Node(node_id, pos)
@@ -100,11 +100,11 @@ class DiGraph(GraphInterface):
         if node_id not in self.nodes:
             return False
         removed_node = self.nodes[node_id]
-        for dist in removed_node.connect_out.keys():
+        for dist in list(removed_node.connect_out):
             self.remove_edge(node_id, dist)
             del dist
 
-        for source in removed_node.connect_in.keys():
+        for source in list(removed_node.connect_in):
             self.remove_edge(source, node_id)
             del source
         del self.nodes[node_id]
@@ -130,7 +130,7 @@ class DiGraph(GraphInterface):
     def __repr__(self):
         gra = ''
         for key, value in self.nodes.items():
-            gra +=  str(value) + '\n'
+            gra += str(value) + '\n'
 
         return gra
 
